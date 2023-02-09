@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bj-chrony01-deployment
+  namespace: bj-chrony
+  labels:
+    app: bj-chrony01
+    version: bj-chrony-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bj-chrony01
+  template:
+    metadata:
+      labels:
+        app: bj-chrony01
+    spec:
+      imagePullSecrets:
+      - name: harborsecret120
+      containers:
+      - name: bj-chrony01
+        image: 172.29.141.120/lt/chrony:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 123
+          protocol: UDP
+          name: udp123
+        env:
+        - name: "NTP_SERVERS"
+          value: "ntp1.aliyun.com,ntp2.aliyun.com,ntp3.aliyun.com,ntp4.aliyun.com"
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 2048Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
