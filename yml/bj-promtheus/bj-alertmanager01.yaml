@@ -1,0 +1,16 @@
+version: '2.3'
+services:
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    hostname: prometheus
+    volumes:
+    - /data/alertmanager:/etc/alertmanager
+    - /etc/localtime:/etc/localtime:ro
+    command:
+    - '--config.file=/etc/alertmanager/alertmanager.yml'
+    ports:
+    - 9093:9093
+    restart: always
+
+

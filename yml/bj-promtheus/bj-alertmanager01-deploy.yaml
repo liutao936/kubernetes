@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bj-alertmanager01-deployment
+  namespace: bj-chrony
+  labels:
+    app: bj-alertmanager01
+    version: bj-chrony-v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bj-alertmanager01
+  template:
+    metadata:
+      labels:
+        app: bj-alertmanager01
+    spec:
+      imagePullSecrets:
+      - name: harborsecret120
+      containers:
+      - name: bj-alertmanager01
+        image: 172.29.141.120/lt/prom/alertmanager:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9093
+          protocol: TCP
+          name: tcp9093
+        volumeMounts:
+        - name: alertmanager01
+          mountPath: /etc/alertmanager
+        - name: localtime
+          mountPath: /etc/localtime:ro
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
+      volumes:
+      - name: alertmanager01
+        persistentVolumeClaim:
+          claimName: alertmanager01-claim
+      - name: localtime
+        hostPath:
+          path: "/etc/localtime"
+
