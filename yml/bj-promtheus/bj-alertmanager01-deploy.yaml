@@ -5,7 +5,7 @@ metadata:
   namespace: bj-promtheus
   labels:
     app: bj-alertmanager01
-    version: alertmanager:v1
+    version: alertmanager-v1
 spec:
   replicas: 2
   selector:
