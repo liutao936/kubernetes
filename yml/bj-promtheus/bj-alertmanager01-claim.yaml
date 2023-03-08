@@ -2,6 +2,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: alertmanager01-claim
+  namespace: bj-promtheus
 spec:
   storageClassName: nfs-client
   accessModes:
