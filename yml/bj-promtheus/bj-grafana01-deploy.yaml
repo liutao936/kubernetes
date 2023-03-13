@@ -27,21 +27,25 @@ spec:
           protocol: TCP
           name: tcp3000
         volumeMounts:
-        - name: grafana01-data
+        - name: bj-grafana01-data
           mountPath: /etc/grafana
           subPath: /data/grafana/config
           readOnly: false
-        - name: grafana01-data
+        - name: bj-grafana01-data
           mountPath: /var/lib/grafana
           subPath: /data/grafana/data
           readOnly: false
-        - name: grafana01-data
+        - name: bj-grafana01-data
           mountPath: /var/log/grafana
           subPath: /data/grafana/logs
           readOnly: false
         - name: grafana01-localtime
           mountPath: /etc/localtime
           readOnly: true
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 3000
         resources:
           limits:
             cpu: 2000m
@@ -49,14 +53,12 @@ spec:
           requests:
             cpu: 100m
             memory: 50Mi
-
       - name: bj-mysql01
         image: 172.29.141.120/lt/mysql:5.7
         imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 3306
-          protocol: TCP
-          name: tcp3306
+      - args:
+        - "--character-set-server=utf8mb4"
+        - "--collation-server=utf8mb4_unicode_ci"
         env:
         - name: " MYSQL_ROOT_PASSWORD"
           value: "liutao"
@@ -66,22 +68,25 @@ spec:
           value: "grafana"
         - name: " MYSQL_PASSWORD"
           value: "liutao"
+        - name: "TZ"
+          value: "Asia/Shanghai"
+        ports:
+        - containerPort: 3306
+          protocol: TCP
+          name: tcp3306
         volumeMounts:
-        - name: grafana01-data
+        - name: bj-grafana01-data
           mountPath: /etc/mysql
           subPath: /data/mysql/conf
           readOnly: false
-        - name: grafana01-data
+        - name: bj-grafana01-data
           mountPath: /var/lib/mysql
           subPath: /data/mysql/data
           readOnly: false
-        - name: grafana01-data
+        - name: bj-grafana01-data
           mountPath: /var/log/mysql
           subPath: /data/mysql/logs
           readOnly: false
-        - name: grafana01-localtime
-          mountPath: /etc/localtime
-          readOnly: true
         resources:
           limits:
             cpu: 2000m
@@ -96,4 +101,3 @@ spec:
       - name: grafana01-localtime
         hostPath:
           path: "/etc/localtime"
-
