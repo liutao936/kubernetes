@@ -29,15 +29,15 @@ spec:
         volumeMounts:
         - name: bj-grafana01-data
           mountPath: /etc/grafana
-          subPath: /data/grafana/config
+          subPath: data/grafana/config
           readOnly: false
         - name: bj-grafana01-data
           mountPath: /var/lib/grafana
-          subPath: /data/grafana/data
+          subPath: data/grafana/data
           readOnly: false
         - name: bj-grafana01-data
           mountPath: /var/log/grafana
-          subPath: /data/grafana/logs
+          subPath: data/grafana/logs
           readOnly: false
         - name: grafana01-localtime
           mountPath: /etc/localtime
@@ -77,15 +77,15 @@ spec:
         volumeMounts:
         - name: bj-grafana01-data
           mountPath: /etc/mysql
-          subPath: /data/mysql/conf
+          subPath: data/mysql/conf
           readOnly: false
         - name: bj-grafana01-data
           mountPath: /var/lib/mysql
-          subPath: /data/mysql/data
+          subPath: data/mysql/data
           readOnly: false
         - name: bj-grafana01-data
           mountPath: /var/log/mysql
-          subPath: /data/mysql/logs
+          subPath: data/mysql/logs
           readOnly: false
         resources:
           limits:
