@@ -1,0 +1,56 @@
+version: "2.3"
+services:
+  grafana:
+    image: grafana/grafana:7.2.0
+    container_name: grafana
+    hostname: grafana
+    restart: always
+    volumes:
+    - /data/grafana/config:/etc/grafana
+    - /data/grafana/logs:/var/log/grafana
+    - /data/grafana/data:/var/lib/grafana
+    - /etc/localtime:/etc/localtime:ro
+    ports:
+    - "3000:3000"
+    user: "104"
+    depends_on:
+    - mysql
+  mysql:
+    image: mysql:5.7
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    container_name: mysql
+    hostname: mysql
+    restart: always
+    environment:
+    - MYSQL_ROOT_PASSWORD=liutao
+    - MYSQL_DATABASE=grafana
+    - MYSQL_USER=grafana
+    - MYSQL_PASSWORD=liutao
+    volumes:
+    - /data/mysql/conf:/etc/mysql
+    - /data/mysql/data:/var/lib/mysql
+    - /data/mysql/logs:/var/log/mysql
+    - /etc/localtime:/etc/localtime:ro
+    ports:
+    - "3306:3306"
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+    - "8080:8080"
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+    - '--path.rootfs=/host'
+    - '--no-collector.nvme'
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+    - '/:/host:ro,rslave'

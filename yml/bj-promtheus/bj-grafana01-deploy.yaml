@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bj-grafana01-deployment
+  namespace: bj-promtheus
+  labels:
+    app: bj-grafana01
+    version: bj-grafana-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bj-grafana01
+  template:
+    metadata:
+      labels:
+        app: bj-grafana01
+    spec:
+      imagePullSecrets:
+      - name: harborsecret120
+      containers:
+      - name: bj-grafana01
+        image: 172.29.141.120/lt/grafana:7.2.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+          name: tcp3000
+        volumeMounts:
+        - name: grafana01-conf
+          mountPath: /etc/grafana
+          subPath: /data/grafana/config
+          readOnly: false
+        - name: grafana01-data
+          mountPath: /var/lib/grafana
+          subPath: /data/grafana/data
+          readOnly: false
+        - name: grafana01-log
+          mountPath: /var/log/grafana
+          subPath: /data/grafana/logs
+          readOnly: false
+        - name: grafana01-localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
+
+      - name: bj-mysql01
+        image: 172.29.141.120/lt/mysql:5.7
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3306
+          protocol: TCP
+          name: tcp3306
+        volumeMounts:
+        - name: mysql01-conf
+          mountPath: /etc/mysql
+          subPath: /data/mysql/conf
+          readOnly: false
+        - name: mysql01-data
+          mountPath: /var/lib/mysql
+          subPath: /data/mysql/data
+          readOnly: false
+        - name: mysql01-log
+          mountPath: /var/log/mysql
+          subPath: /data/mysql/logs
+          readOnly: false
+        - name: mysql01-localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
+      volumes:
+      - name: grafana01-conf
+        persistentVolumeClaim:
+          claimName: bj-grafana01-claim
+      - name: grafana01-log
+        persistentVolumeClaim:
+          claimName: bj-grafana01-claim
+      - name: grafana01-data
+        persistentVolumeClaim:
+          claimName: bj-grafana01-claim
+      - name: grafana01-localtime
+        hostPath:
+          path: "/etc/localtime"
+      - name: mysql01-conf
+        persistentVolumeClaim:
+          claimName: bj-grafana01-claim
+      - name: mysql01-data
+        persistentVolumeClaim:
+          claimName: bj-grafana01-claim
+      - name: mysql01-log
+        persistentVolumeClaim:
+          claimName: bj-grafana01-claim
+      - name: mysql01-localtime
+        hostPath:
+          path: "/etc/localtime"

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: bj-grafana01
+  name: bj-grafana01-service
+  namespace: bj-promtheus
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 172.29.141.116
+  ports:
+  - name: tcp3000
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+  - name: tcp3306
+    protocol: TCP
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: bj-grafana01
