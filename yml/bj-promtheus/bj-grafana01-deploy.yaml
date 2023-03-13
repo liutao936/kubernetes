@@ -56,7 +56,7 @@ spec:
       - name: bj-mysql01
         image: 172.29.141.120/lt/mysql:5.7
         imagePullPolicy: IfNotPresent
-      - args:
+        args:
         - "--character-set-server=utf8mb4"
         - "--collation-server=utf8mb4_unicode_ci"
         env:
