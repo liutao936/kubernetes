@@ -95,7 +95,7 @@ spec:
             cpu: 100m
             memory: 50Mi
       volumes:
-      - name: grafana01-data
+      - name: bj-grafana01-data
         persistentVolumeClaim:
           claimName: bj-grafana01-claim
       - name: grafana01-localtime
