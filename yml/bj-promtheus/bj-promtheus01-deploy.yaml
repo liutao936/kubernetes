@@ -83,7 +83,7 @@ spec:
           readOnly: false
         - name: bj-promtheus01-data
           mountPath: /var/lib/influxdb/data
-          subPath: /data/influxdb/data
+          subPath: data/influxdb/data
           readOnly: false
         - name: bj-promtheus01-localtime
           mountPath: /etc/localtime
