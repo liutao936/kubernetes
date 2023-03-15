@@ -51,9 +51,6 @@ spec:
       - name: bj-influxdb01
         image: 172.29.141.120/lt/influxdb:1.8
         imagePullPolicy: IfNotPresent
-        args:
-        - "--character-set-server=utf8mb4"
-        - "--collation-server=utf8mb4_unicode_ci"
         env:
         - name: "INFLUXDB_DB"
           value: "prometheus"
