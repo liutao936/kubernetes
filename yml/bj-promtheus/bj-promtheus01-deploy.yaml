@@ -68,7 +68,7 @@ spec:
         - name: "INFLUXDB_USER_PASSWORD"
           value: "prometheuspwd"
         - name: "INFLUXDB_CONFIG_PATH"
-          value: "/etc/influxdb/influxdb.confs"
+          value: "/etc/influxdb/influxdb.conf"
         ports:
         - containerPort: 8086
           protocol: TCP
