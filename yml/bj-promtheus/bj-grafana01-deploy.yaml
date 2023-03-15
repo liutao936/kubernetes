@@ -42,10 +42,6 @@ spec:
         - name: grafana01-localtime
           mountPath: /etc/localtime
           readOnly: true
-        readinessProbe:
-          httpGet:
-            path: /login
-            port: 3000
         resources:
           limits:
             cpu: 2000m
