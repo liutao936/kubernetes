@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bj-promtheus01-deployment
+  namespace: bj-promtheus
+  labels:
+    app: bj-promtheus01
+    version: bj-promtheus-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bj-promtheus01
+  template:
+    metadata:
+      labels:
+        app: bj-promtheus01
+    spec:
+      imagePullSecrets:
+      - name: harborsecret120
+      containers:
+      - name: bj-promtheus01
+        image: 172.29.141.120/lt/grafana/grafana:7.2.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+          name: tcp9090
+        volumeMounts:
+        - name: bj-grafana01-data
+          mountPath: /etc/grafana
+          subPath: data/grafana/config
+          readOnly: false
+        - name: bj-grafana01-data
+          mountPath: /var/lib/grafana
+          subPath: data/grafana/data
+          readOnly: false
+        - name: bj-grafana01-data
+          mountPath: /var/log/grafana
+          subPath: data/grafana/logs
+          readOnly: false
+        - name: grafana01-localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
+      - name: bj-influxdb01
+        image: 172.29.141.120/lt/mysql:5.7
+        imagePullPolicy: IfNotPresent
+        args:
+        - "--character-set-server=utf8mb4"
+        - "--collation-server=utf8mb4_unicode_ci"
+        env:
+        - name: "MYSQL_ROOT_PASSWORD"
+          value: "liutao"
+        - name: "MYSQL_DATABASE"
+          value: "grafana"
+        - name: "MYSQL_USER"
+          value: "grafana"
+        - name: "MYSQL_PASSWORD"
+          value: "liutao"
+        - name: "TZ"
+          value: "Asia/Shanghai"
+        ports:
+        - containerPort: 8086
+          protocol: TCP
+          name: tcp8086
+        - containerPort: 8083
+          protocol: TCP
+          name: tcp8083
+        volumeMounts:
+        - name: bj-grafana01-data
+          mountPath: /etc/mysql
+          subPath: data/mysql/conf
+          readOnly: false
+        - name: bj-grafana01-data
+          mountPath: /var/lib/mysql
+          subPath: data/mysql/data
+          readOnly: false
+        - name: bj-grafana01-data
+          mountPath: /var/log/mysql
+          subPath: data/mysql/logs
+          readOnly: false
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
+      volumes:
+      - name: bj-grafana01-data
+        persistentVolumeClaim:
+          claimName: bj-grafana01-claim
+      - name: grafana01-localtime
+        hostPath:
+          path: "/etc/localtime"
